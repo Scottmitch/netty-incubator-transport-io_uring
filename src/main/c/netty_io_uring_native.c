@@ -252,6 +252,7 @@ static jobjectArray netty_io_uring_setup(JNIEnv *env, jclass clazz, jint entries
     int ring_fd = sys_io_uring_setup((int)entries, &p);
 
     if (ring_fd < 0) {
+        printf("failed to create io_uring ring fd errno=%d, err_msg=\"%s\"\n", errno, strerror(errno));
         netty_unix_errors_throwRuntimeExceptionErrorNo(env, "failed to create io_uring ring fd ", errno);
         return NULL;
     }
@@ -259,6 +260,7 @@ static jobjectArray netty_io_uring_setup(JNIEnv *env, jclass clazz, jint entries
     int ret = setup_io_uring(ring_fd, &io_uring_ring, &p);
 
     if (ret != 0) {
+        printf("failed to mmap io_uring ring buffer errno=%d, err_msg=\"%s\"\n", errno, strerror(errno));
         netty_unix_errors_throwRuntimeExceptionErrorNo(env, "failed to mmap io_uring ring buffer", ret);
         return NULL;
     }
